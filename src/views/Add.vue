@@ -129,7 +129,7 @@
                   <option v-for="category in categories" :value="category">
                     {{ category }}
                   </option>
-              </select>
+                </select>
                 <label
                   for="category"
                   class="error text-danger"
@@ -185,7 +185,11 @@
           </div>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <div class="row d-flex justify-content-center">
+        <div class="col-md-4">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
     </form>
   </div>
 </template>
@@ -318,6 +322,7 @@ export default {
       return localStorage.setItem("category_list", JSON.stringify(newCategory));
     },
     imageUpload() {
+      this.product.image = null;
       const file = document.getElementById("image").files[0];
       if (!file.type.match("image.*")) {
         this.errors["image"] = "Please select an image file";
