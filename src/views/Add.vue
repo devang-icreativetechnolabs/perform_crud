@@ -167,7 +167,7 @@
                 <input
                   type="number"
                   class="form-control"
-                  id="rating"
+                  id="count"
                   min="0"
                   step="0"
                   required
@@ -315,7 +315,7 @@ export default {
     },
     addCategory(category) {
       const categoryList = this.getLocalCategories() || [];
-      categoryList.push(category);
+      categoryList.push(category.trim());
       this.setCategory(categoryList);
     },
     setCategory(newCategory) {

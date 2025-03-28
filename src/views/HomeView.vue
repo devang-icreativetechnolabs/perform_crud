@@ -145,22 +145,28 @@
           </li>
         </ul>
       </nav>
-      <div class="d-flex justify-content-between">
-        <div class="card-body">
-          <h5 class="card-title">Total Records</h5>
-          <h3 class="card-text">
-            {{ totalRecords }}
-          </h3>
+      <div class="text-center d-flex justify-content-between">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Total Records</h5>
+            <h3 class="card-text">
+              {{ totalRecords }}
+            </h3>
+          </div>
         </div>
-        <div class="card-body">
-          <h5 class="card-title">Total Current Page Price</h5>
-          <h3 class="card-text">
-            {{ getTotalPrice }} <i class="fa fa-dollar"></i>
-          </h3>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Total Current Page Price</h5>
+            <h3 class="card-text">
+              {{ getTotalPrice }} <i class="fa fa-dollar"></i>
+            </h3>
+          </div>
         </div>
-        <div class="card-body">
-          <h5 class="card-title">Current Page Records</h5>
-          <h3 class="card-text">{{ currentPageRecords }}</h3>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Current Page Records</h5>
+            <h3 class="card-text">{{ currentPageRecords }}</h3>
+          </div>
         </div>
       </div>
     </div>
@@ -266,12 +272,12 @@ export default {
         this.resetPagination();
         if (this.selectedCategory) {
           this.totalProducts = this.totalProducts.filter(
-            (product) => product.category === this.selectedCategory
+            (product) => product.category.trim().toLowerCase() === this.selectedCategory.trim().toLowerCase()
           );
         }
         if (this.nameFilter) {
           this.totalProducts = this.totalProducts.filter((product) =>
-            product.title.toLowerCase().includes(this.nameFilter.toLowerCase())
+            product.title.toLowerCase().includes(this.nameFilter.trim().toLowerCase())
           );
         }
       }
@@ -287,19 +293,19 @@ export default {
       this.showConfirm = false;
     },
     async deleteProduct(productId) {
-      const filteredProducts = this.totalProducts.filter(
-        (product) => product.id !== productId
+      const filteredProducts = this.getLocalProducts().filter(
+        (product) => product.id != productId
       );
       localStorage.setItem("product_list", JSON.stringify(filteredProducts));
       this.applyFilter();
+      this.enableScroll();
       this.showConfirm = false;
       this.$toast.success("Product deleted succesfully!", {
-          duration: 3000, // milliseconds
-          position: "top-right",
-          dismissible: true,
-          type: 'success',
-        });
-
+        duration: 3000, // milliseconds
+        position: "top-right",
+        dismissible: true,
+        type: "success",
+      });
     },
     disableScroll() {
       document.documentElement.style.overflow = "hidden";
@@ -307,9 +313,6 @@ export default {
     enableScroll() {
       document.documentElement.style.overflow = "auto";
     },
-  },
-  mounted() {
-    
   },
   async created() {
     if (localStorage.getItem("category_list")) {
