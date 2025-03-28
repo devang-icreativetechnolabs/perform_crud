@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="row p-2 d-flex align-items-center">
+  <div class="p-4">
+    <div class="row d-flex align-items-center">
       <div class="col-md-3">
         <div class="form-group">
           <label for="categoryFilter">Category</label>
@@ -25,6 +25,7 @@
             id="nameFilter"
             class="form-control search"
             v-model="nameFilter"
+            placeholder="Search by name"
             @input="applyFilter"
             @blur="
               nameFilter = nameFilter.trim();
@@ -59,7 +60,7 @@
           <td scope="row" class="col-md-2">{{ product.title }}</td>
           <td scope="row">
             <span class="bg-dark rounded-pill p-2 text-warning fw-bold">
-              {{ product.price }}<i class="fa fa-dollar"></i>
+              {{ product.price }} <i class="fa fa-dollar"></i>
             </span>
           </td>
           <td class="col-md-2">
@@ -84,6 +85,11 @@
           </td>
           <td>
             <div class="d-flex gap-2">
+              <router-link
+                class="btn btn-info btn-sm"
+                :to="{ name: 'edit', params: { id: product.id } }"
+                >Edit</router-link
+              >
               <button
                 type="button"
                 class="btn btn-danger btn-sm"
@@ -91,11 +97,6 @@
               >
                 Delete
               </button>
-              <router-link
-                class="btn btn-info btn-sm"
-                :to="{ name: 'edit', params: { id: product.id } }"
-                >Edit</router-link
-              >
             </div>
           </td>
         </tr>
@@ -169,7 +170,7 @@
     :message="confirmMessage"
     :id="selectedId"
     @confirm="deleteProduct"
-    @cancel="showConfirm = false"
+    @cancel="closeConfirmation"
   ></ConfirmationModal>
 </template>
 <script>
@@ -276,9 +277,14 @@ export default {
       }
     },
     openConfirmation(productId) {
+      this.disableScroll();
       this.showConfirm = true;
       this.confirmMessage = "You want to delete this product?";
       this.selectedId = productId;
+    },
+    closeConfirmation() {
+      this.enableScroll();
+      this.showConfirm = false;
     },
     async deleteProduct(productId) {
       const filteredProducts = this.totalProducts.filter(
@@ -287,9 +293,24 @@ export default {
       localStorage.setItem("product_list", JSON.stringify(filteredProducts));
       this.applyFilter();
       this.showConfirm = false;
+      this.$toast.success("Product deleted succesfully!", {
+          duration: 3000, // milliseconds
+          position: "top-right",
+          dismissible: true,
+          type: 'success',
+        });
+
+    },
+    disableScroll() {
+      document.documentElement.style.overflow = "hidden";
+    },
+    enableScroll() {
+      document.documentElement.style.overflow = "auto";
     },
   },
-
+  mounted() {
+    
+  },
   async created() {
     if (localStorage.getItem("category_list")) {
       this.categories = this.getLocalCategories();

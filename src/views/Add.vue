@@ -341,6 +341,12 @@ export default {
         );
         newProductList[index] = this.product;
         this.setLocalProducts(newProductList);
+        this.$toast.success("Product updated succesfully!", {
+          duration: 3000, // milliseconds
+          position: "top-right",
+          dismissible: true,
+          type: 'success',
+        });
         this.$router.push({ name: "home" });
       } else {
         const newProductList = this.getLocalProducts() || [];
@@ -355,6 +361,10 @@ export default {
           this.addCategory(this.product.category);
         }
         this.setLocalProducts(newProductList);
+        this.$toast.success("Product created succesfully!", {
+          duration: 5000, // milliseconds
+          position: "top-right",
+        });
         this.$router.push({ name: "home" });
       }
     },
