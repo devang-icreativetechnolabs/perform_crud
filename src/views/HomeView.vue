@@ -29,9 +29,11 @@
           />
         </div>
       </div>
-      <!-- <div class="col-md-3">
-        <button type="button" class="btn btn-primary" @click="resetFilter()">Clear Filter</button>
-      </div> -->
+      <div class="col-md-3">
+        <button type="button" class="btn btn-primary" @click="resetFilter()">
+          Clear Filter
+        </button>
+      </div>
     </div>
     <table class="table table-hover">
       <thead>
@@ -70,7 +72,8 @@
               <router-link
                 class="btn btn-info"
                 :to="{ name: 'edit', params: { id: product.id } }"
-              >Edit</router-link>
+                >Edit</router-link
+              >
             </div>
           </td>
         </tr>
@@ -221,14 +224,19 @@ export default {
     getLocalProducts() {
       return JSON.parse(localStorage.getItem("product_list"));
     },
-    resetFilter() {
+    resetPagination() {
       this.currentPage = 1;
       this.limit = 5;
+    },
+    resetFilter() {
+      this.selectedCategory = "";
+      this.nameFilter = "";
+      this.applyFilter();
     },
     async applyFilter() {
       this.totalProducts = await this.getLocalProducts();
       if (this.selectedCategory || this.nameFilter) {
-        this.resetFilter();
+        this.resetPagination();
         if (this.selectedCategory) {
           this.totalProducts = this.totalProducts.filter(
             (product) => product.category === this.selectedCategory

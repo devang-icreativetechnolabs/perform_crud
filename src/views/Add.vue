@@ -110,6 +110,7 @@
                   >Product Category</label
                 >
                 <input
+                  v-if="!isEdit"
                   type="text"
                   class="form-control"
                   id="category"
@@ -117,6 +118,18 @@
                   @blur="validated()"
                   required
                 />
+                <select
+                  v-else
+                  class="form-control"
+                  v-model="product.category"
+                  required
+                  @change="validated()"
+                  id="category"
+                >
+                  <option v-for="category in categories" :value="category">
+                    {{ category }}
+                  </option>
+              </select>
                 <label
                   for="category"
                   class="error text-danger"
@@ -184,6 +197,7 @@ export default {
       isEdit: false,
       previewImg: "",
       errors: [],
+      categories: this.getLocalCategories() || [],
       product: {
         id: "",
         title: "",
@@ -220,10 +234,10 @@ export default {
           ...this.product,
         };
         productList.push(product);
-        this.setLocalProducts(productList);
         if (!this.checkCategoryExist(product.category)) {
           this.addCategory(product.category);
         }
+        this.setLocalProducts(productList);
         this.resetProduct();
         this.$router.push({ name: "home" });
       }
@@ -305,7 +319,7 @@ export default {
     },
     imageUpload() {
       const file = document.getElementById("image").files[0];
-      if (!file.type.match('image.*')) {
+      if (!file.type.match("image.*")) {
         this.errors["image"] = "Please select an image file";
         return;
       }
