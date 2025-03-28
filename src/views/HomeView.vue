@@ -26,6 +26,10 @@
             class="form-control search"
             v-model="nameFilter"
             @input="applyFilter"
+            @blur="
+              nameFilter = nameFilter.trim();
+              applyFilter();
+            "
           />
         </div>
       </div>
@@ -52,25 +56,43 @@
         <tr v-for="(product, index) in currentPageProducts" :key="product.id">
           <th scope="row">{{ index + 1 + (currentPage - 1) * limit }}</th>
           <td><img :src="product.image" width="100" height="100" /></td>
-          <td class="col-md-3">{{ product.title }}</td>
-          <td scope="row">{{ product.price }} <i class="fa fa-dollar"></i></td>
-          <td class="col-md-3">{{ product.description }}</td>
-          <td>{{ product.category }}</td>
+          <td scope="row" class="col-md-2">{{ product.title }}</td>
+          <td scope="row">
+            <span class="bg-dark rounded-pill p-2 text-warning fw-bold">
+              {{ product.price }}<i class="fa fa-dollar"></i>
+            </span>
+          </td>
+          <td class="col-md-2">
+            {{
+              product.description.length > 100
+                ? product.description.slice(0, 100) + "..."
+                : product.description
+            }}
+          </td>
           <td>
-            {{ product.rating.rate }} <i class="fa fa-star"></i> by
-            {{ product.rating.count ?? 0 }} <i class="fa fa-users"></i>
+            <span class="badge rounded-pill p-2 bg-primary">{{
+              product.category
+            }}</span>
+          </td>
+          <td>
+            <span class="bg-dark text-white p-2 rounded-pill">
+              {{ product.rating.rate }}
+              <i class="fa fa-star text-warning"></i> by
+              {{ product.rating.count ?? 0 }}
+              <i class="fa fa-users text-info"></i>
+            </span>
           </td>
           <td>
             <div class="d-flex gap-2">
               <button
                 type="button"
-                class="btn btn-danger"
+                class="btn btn-danger btn-sm"
                 @click="openConfirmation(product.id)"
               >
                 Delete
               </button>
               <router-link
-                class="btn btn-info"
+                class="btn btn-info btn-sm"
                 :to="{ name: 'edit', params: { id: product.id } }"
                 >Edit</router-link
               >
@@ -88,6 +110,7 @@
               @click="prevPage"
               :disabled="currentPage === 1"
               class="page-link"
+              :class="[{ 'bg-secondary text-white': currentPage === 1 }]"
             >
               Previous
             </button>
@@ -100,7 +123,7 @@
               @click="changePage(page)"
               :class="[
                 'page-link',
-                { 'bg-info text-white': page === currentPage },
+                { 'bg-primary text-white': page === currentPage },
               ]"
             >
               {{ page }}
@@ -112,6 +135,9 @@
               class="page-link"
               @click="nextPage"
               :disabled="currentPage === totalPages"
+              :class="[
+                { 'bg-secondary text-white': currentPage === totalPages },
+              ]"
             >
               Next
             </button>
